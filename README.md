@@ -24,7 +24,7 @@ FastDigest is a Chrome extension designed to summarize Hacker News comments usin
 
 2. **Configure LLM Provider**
 
-   - Go to background.js. At the top, you will see a variable to set your OpenAI API Key.
+   - Go to service_worker.js. At the top, you will see a variable to set your OpenAI API Key.
    - FastDigest also supports Ollama(llama3.1) for using local LLMs. To use Ollama, you will need to do the following:
      - shut down Ollama if it is currently running
      - run `launchctl setenv OLLAMA_ORIGINS "*"`
