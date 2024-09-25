@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "FastDigest",
+    "description": "Summarizes the content of the Hacker News comments",
+    "version": "1.0",
+    "action": {
+        "default_icon": "summarize_hn.png",
+        "default_title": "Click to open panel"
+    },
+    "permissions": [
+        "activeTab","tabs","sidePanel"
+    ],
+    "background": {
+      "service_worker": "background.js",
+      "type": "module"
+    },
+    "host_permissions": ["http://*/*", "https://*/*", "*://*/*"],
+    "content_scripts": [
+    {
+      "matches": ["https://news.ycombinator.com/item*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
