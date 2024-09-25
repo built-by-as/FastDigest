@@ -9,12 +9,9 @@ class LLMProvider {
   }
 
   async post(url, body) {
-    const headers = {
-      'Content-Type': 'application/json'
-    };
+    const headers = {'Content-Type': 'application/json'};
     if (this.apiKey) headers.authorization = `Bearer ${this.apiKey}`;
-    const init = {method: 'POST', headers, body: JSON.stringify(body)};
-    return fetch(url, init);
+    return fetch(url, {method: 'POST', headers, body: JSON.stringify(body)});
   }
 
   async postJson(url, body) {
@@ -91,7 +88,7 @@ export class OllamaProvider extends LLMProvider {
   async summarize(prompt) {
     const data = await this.postJson(this.apiUrl, {
       model: this.model,
-      prompt: prompt,
+      prompt,
       stream: false,
     });
     return data.response;
@@ -100,7 +97,7 @@ export class OllamaProvider extends LLMProvider {
   async summarizeStream(prompt, onChunk) {
     const response = await this.post(this.apiUrl, {
       model: this.model,
-      prompt: prompt,
+      prompt,
       stream: true,
     });
 
