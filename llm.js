@@ -7,6 +7,17 @@ class LLMProvider {
   async summarizeStream(prompt, onChunk) {
     throw new Error("summarizeStream method must be implemented.");
   }
+
+  async post(url, body) {
+    const headers = {'Content-Type': 'application/json'};
+    if (this.apiKey) headers.authorization = `Bearer ${this.apiKey}`;
+    return fetch(url, {method: 'POST', headers, body: JSON.stringify(body)});
+  }
+
+  async postJson(url, body) {
+    const r = await this.post(url, body);
+    return r.json();
+  }
 }
 
 // OpenAIProvider.js
@@ -19,41 +30,25 @@ export class OpenAIProvider extends LLMProvider {
   }
 
   async summarize(prompt) {
-    const response = await fetch(this.apiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: prompt },
-        ],
-        stream: false,
-      }),
+    const data = await this.postJson(this.apiUrl, {
+      model: this.model,
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: prompt },
+      ],
+      stream: false,
     });
-
-    const data = await response.json();
     return data.choices[0].message.content;
   }
 
   async summarizeStream(prompt, onChunk) {
-    const response = await fetch(this.apiUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: this.model,
-        messages: [
-          { role: "system", content: "You are a helpful assistant." },
-          { role: "user", content: prompt },
-        ],
-        stream: true,
-      }),
+    const response = await this.post(this.apiUrl, {
+      model: this.model,
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: prompt },
+      ],
+      stream: true,
     });
 
     const reader = response.body.getReader();
@@ -91,29 +86,19 @@ export class OllamaProvider extends LLMProvider {
   }
 
   async summarize(prompt) {
-    const response = await fetch(this.apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: this.model,
-        prompt: prompt,
-        stream: false,
-      }),
+    const data = await this.postJson(this.apiUrl, {
+      model: this.model,
+      prompt,
+      stream: false,
     });
-
-    const data = await response.json();
     return data.response;
   }
 
   async summarizeStream(prompt, onChunk) {
-    const response = await fetch(this.apiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: this.model,
-        prompt: prompt,
-        stream: true,
-      }),
+    const response = await this.post(this.apiUrl, {
+      model: this.model,
+      prompt,
+      stream: true,
     });
 
     const reader = response.body.getReader();

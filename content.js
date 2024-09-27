@@ -147,7 +147,7 @@ async function summarizeComment(commentElement) {
     commentsArray.push([parentComment, ...currentChunk]);
   }
 
-  // Send the array of chunks to the background script in one message
+  // Send the array of chunks to the service_worker script in one message
   try {
     await chrome.runtime.sendMessage({
       action: "summarize_comments",
@@ -261,7 +261,7 @@ async function summarizeAllComments() {
     commentsArray.push([...currentChunk]);
   }
 
-  // Send the array of chunks to the background script
+  // Send the array of chunks to the service_worker script
   try {
     await chrome.runtime.sendMessage({
       action: "summarize_comments",
@@ -296,7 +296,7 @@ async function sendSummarizationRequest(commentsText, accumulatedSummary) {
 window.addEventListener("load", () => {
   addSummarizeButtons();
 
-  // listen for alert messages from the background script
+  // listen for alert messages from the service_worker script
   chrome.runtime.onMessage.addListener((message) => {
     if (message.action === "alert") {
       alert(message.message);

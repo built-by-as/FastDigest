@@ -35,7 +35,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   }
 });
 
-// background.js
+// service_worker.js
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   if (message.action === "summarize_comments") {
     if (isSummarizing) {

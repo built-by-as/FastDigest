@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-// Ensure the listener is set up before sending messages from the background
+// Ensure the listener is set up before sending messages from the service_worker
 console.log("Side panel script loaded and listener set up.");
 
 chrome.runtime.sendMessage({ action: "sidepanel_ready" });
