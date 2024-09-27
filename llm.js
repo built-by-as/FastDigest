@@ -15,7 +15,7 @@ class LLMProvider {
   }
 
   async postJson(url, body) {
-    const r = await post(url, body);
+    const r = await this.post(url, body);
     return r.json();
   }
 }
